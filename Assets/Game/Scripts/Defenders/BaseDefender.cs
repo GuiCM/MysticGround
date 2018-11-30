@@ -2,16 +2,26 @@
 
 public class BaseDefender : MonoBehaviour, IDefender
 {
+    public int Price
+    {
+        get
+        {
+            return price;
+        }
+    }
+
     [SerializeField]
     private Animator animator;
     [SerializeField]
-    private GameObject projectile;    
+    private GameObject projectile;
     [SerializeField]
     private int currentLife;
     [SerializeField]
     private int damageCaused;
     [SerializeField]
     private int baseLife;
+    [SerializeField]
+    private int price;
 
     private GameObject projectileHolder;
 

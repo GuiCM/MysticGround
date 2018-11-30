@@ -2,17 +2,15 @@
 
 public class PlayableAreaManager : SingletonType<PlayableAreaManager>
 {
+    [SerializeField]
+    private Transform defendersHolder;
     private RectTransform playableAreaRect;
+    private Player player;
 
-    [SerializeField]
     private int leftOffset;
-    [SerializeField]
     private int bottomOffset;
-    [SerializeField]
     private float unitMeasure;
-    [SerializeField]
     private float currentPlayableAreaWidth;
-    [SerializeField]
     private float currentPlayableAreaHeigth;
 
     private int nativeWidth = 1920;
@@ -20,10 +18,15 @@ public class PlayableAreaManager : SingletonType<PlayableAreaManager>
 
     private byte[,] fieldUnits;
 
+    private void Awake()
+    {
+        playableAreaRect = GetComponent<RectTransform>();
+        player = FindObjectOfType<Player>();
+    }
+
     private void Start()
     {
         fieldUnits = new byte[5, 10];
-        playableAreaRect = GetComponent<RectTransform>();
         SetCurrentPlayableAreaSize();
     }
 
@@ -38,6 +41,37 @@ public class PlayableAreaManager : SingletonType<PlayableAreaManager>
 
         leftOffset = (int)(posInPixels.x - (currentPlayableAreaWidth / 2));
         bottomOffset = (int)(posInPixels.y - (currentPlayableAreaHeigth / 2));
+    }
+
+    private void OnMouseDown()
+    {
+        // First, check if have some defender selected to place
+        if (player.SelectedDefender != null)
+        {
+            // Then check if the player has currency enough
+            if (player.HaveMoney())
+            {
+                PlaceDefender();
+
+                player.ChangeCurrency();
+                player.ResetSelectedDefender();
+            }
+        }
+        else
+        {
+            print("Nothing selected.");
+        }
+    }
+
+    private void PlaceDefender()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        Vector2 coordinates = GetCoordinateNormalized(mousePos);
+        Vector2 position = GetCoordinate(coordinates);
+
+        fieldUnits[(int)coordinates.y, (int)coordinates.x] = 1;
+
+        Instantiate(player.SelectedDefender.gameObject, new Vector3(position.x, position.y, 5), Quaternion.identity, defendersHolder);
     }
 
     public Vector2 GetCoordinateNormalized(Vector2 position)
