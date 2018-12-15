@@ -1,27 +1,14 @@
 ﻿using UnityEngine;
 
-public class BaseDefender : MonoBehaviour, IDefender
+/// <summary>
+/// Represents a base defender that CAN ATTACK.
+/// </summary>
+public class BaseDefender : BaseEntity, IDefender
 {
-    public int Price
-    {
-        get
-        {
-            return price;
-        }
-    }
-
-    [SerializeField]
-    private Animator animator;
     [SerializeField]
     private GameObject projectile;
     [SerializeField]
-    private int currentLife;
-    [SerializeField]
     private int damageCaused;
-    [SerializeField]
-    private int baseLife;
-    [SerializeField]
-    private int price;
 
     private GameObject projectileHolder;
 
@@ -30,9 +17,9 @@ public class BaseDefender : MonoBehaviour, IDefender
     private Vector3 initialRayPosition;
 
     // Use this for initialization
-    void Start()
+    protected override void Start()
     {
-        currentLife = baseLife;
+        base.Start();
 
         layerMaskRayCast = LayerMask.GetMask("Attacker");
         initialRayPosition = transform.position;
@@ -56,16 +43,6 @@ public class BaseDefender : MonoBehaviour, IDefender
     public virtual void CauseDamage(BaseAttacker baseAttacker)
     {
         baseAttacker.ReceiveDamage(damageCaused);
-    }
-
-    public void ReceiveDamage(int damage)
-    {
-        currentLife -= damage;
-
-        if (currentLife <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     private bool HasEnemyInLine()
