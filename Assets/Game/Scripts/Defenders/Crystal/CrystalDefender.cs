@@ -1,7 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
 
 public class CrystalDefender : BaseEntity
 {
+    [Range(10f, 30f)]
     public float timeToGenerateNewCrystal;
 
     protected override void Start()
@@ -9,13 +10,16 @@ public class CrystalDefender : BaseEntity
         base.Start();
         timeToGenerateNewCrystal = 20f;
 
-        print(DateTime.Now.ToLongTimeString());
         InvokeRepeating("GenerateCrystal", timeToGenerateNewCrystal, timeToGenerateNewCrystal);
     }
 
     public void GenerateCrystal()
     {
-        print(DateTime.Now.ToLongTimeString());
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("CrystalGenerated"))
+        {
+            ResetGeneration();
+        }
+
         animator.SetTrigger("GenerateCrystal");
     }
 
